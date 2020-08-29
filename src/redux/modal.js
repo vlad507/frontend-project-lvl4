@@ -20,6 +20,4 @@ export const actions = {
   ...modalSlice.actions,
 };
 
-export const getModalState = (state) => state.modal;
-
 export default modalSlice.reducer;

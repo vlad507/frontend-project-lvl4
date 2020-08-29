@@ -6,7 +6,7 @@ import channels, {
   actions as channelsActions, removeChannel, renameChannel, addNewChannel,
 } from './channels';
 import messages, { actions as messagesActions, sendMessage } from './messages';
-import modal, { actions as modalActions, getModalState } from './modal';
+import modal, { actions as modalActions } from './modal';
 
 export default combineReducers({
   channels,

@@ -31,6 +31,7 @@ export default () => {
         handleChange,
         values,
         errors,
+        isSubmitting,
       }) => {
         const messageClassNames = cn({
           'form-control': true,
@@ -53,7 +54,7 @@ export default () => {
               </div>
             </div>
             <div>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                 {i18next.t('send')}
               </button>
             </div>
