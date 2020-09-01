@@ -9,31 +9,23 @@ import routes from '../routes';
 const slice = createSlice({
   name: 'channels',
   initialState: {
-    byId: {},
-    allIds: [],
-    channelAddingState: 'none',
+    channelsList: [],
     currentChannelId: null,
   },
   reducers: {
-    fetchChannelsSuccess(state, { payload }) {
-      state.byId = _.keyBy(payload.channels, 'id');
-      state.allIds = payload.channels.map((c) => c.id);
-    },
     fetchChannelSuccess(state, { payload }) {
       const { channel } = payload;
-      const { id } = channel;
-      state.byId[id] = channel;
-      state.allIds.push(id);
+      state.channelsList.push(channel);
     },
     removeChannelSuccess(state, { payload }) {
-      const { id } = payload;
-      state.byId = _.omit(state.byId, id);
-      state.allIds = _.without(state.allIds, id);
+      const { id, currentChannelId } = payload;
+      state.channelsList = state.channelsList.filter((channel) => channel.id !== id);
+      state.currentChannelId = currentChannelId;
     },
     renameChannelSuccess(state, { payload }) {
-      const { channel } = payload;
-      console.log(payload);
-      state.byId[channel.id] = channel;
+      const { id, name } = payload.channel;
+      const changedChannel = _.find(state.channelsList, (channel) => channel.id === id);
+      changedChannel.name = name;
     },
     setCurrentChannelId(state, { payload }) {
       const { currentChannelId } = payload;

@@ -8,9 +8,9 @@ export default () => {
   const dispatch = useDispatch();
   const { setCurrentChannelId } = actions;
   const {
-    channels: { allIds, byId, currentChannelId },
+    channels: { channelsList, currentChannelId },
   } = useSelector((state) => state);
-  const channels = allIds.map((id) => byId[id]);
+  const channels = channelsList;
   const changeChannel = (id) => () => {
     dispatch(setCurrentChannelId({ currentChannelId: id }));
   };

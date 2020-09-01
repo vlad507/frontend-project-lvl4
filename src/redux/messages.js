@@ -6,6 +6,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import routes from '../routes';
+import { actions as channelsActions } from './channels';
 
 export const sendMessage = (data) => async () => {
   const { channelId } = data;
@@ -19,18 +20,16 @@ export const sendMessage = (data) => async () => {
 
 const messagesSlice = createSlice({
   name: 'messages',
-  initialState: { byId: {}, allIds: [], messageSendingState: 'none' },
+  initialState: [],
   reducers: {
-    fetchMessagesSuccess(state, { payload }) {
-      state.byId = _.keyBy(payload.messages, 'id');
-      state.allIds = payload.messages.map((message) => message.id);
-    },
     fetchMessageSuccess(state, { payload }) {
       const { message } = payload;
-      const { id } = message;
-      state.byId[id] = message;
-      state.allIds.push(id);
+      state.push(message);
     },
+  },
+  extraReducers: {
+    [channelsActions.removeChannelSuccess.toString()]: (state, { payload: { id } }) => state
+      .filter(({ channelId }) => channelId !== id),
   },
 });
 

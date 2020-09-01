@@ -11,9 +11,9 @@ const Add = () => {
   const dispatch = useDispatch();
 
   const {
-    channels: { allIds, byId },
+    channels: { channelsList },
   } = useSelector((state) => state);
-  const channelsNames = allIds.map((id) => byId[id].name);
+  const channelsNames = channelsList.map((channel) => channel.name);
 
   const channelSchema = yup.object().shape({
     channel: yup.string().trim().required(i18next.t('required')).notOneOf(channelsNames),

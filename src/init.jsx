@@ -15,56 +15,73 @@ import i18next from 'i18next';
 import resources from './locales';
 import Context from './context';
 import App from './components/App';
-import getUserName from './utils';
+import { getUserName, setUserName, getNewName } from './utils';
 import reducer, { actions } from './redux';
 
 export default () => {
-  if (process.env.NODE_ENV !== 'production') {
-    localStorage.debug = 'chat:*';
-  }
+  i18next
+    .init(
+      {
+        lng: 'en',
+        resources,
+      },
+    )
+    .then(() => {
+      if (process.env.NODE_ENV !== 'production') {
+        localStorage.debug = 'chat:*';
+      }
 
-  const socket = io(process.env.PORT);
+      const socket = io(process.env.PORT);
 
-  i18next.init(
-    {
-      lng: 'en',
-      resources,
-    },
-  );
+      const preloadedState = {
+        channels: {
+          channelsList: gon.channels,
+          currentChannelId: gon.currentChannelId,
+        },
+        messages: gon.messages,
+      };
 
-  const store = configureStore({
-    reducer,
-  });
+      const store = configureStore({
+        reducer,
+        preloadedState,
+      });
 
-  store.dispatch(actions.fetchMessagesSuccess({ messages: gon.messages }));
+      socket.on('newMessage', ({ data }) => {
+        store.dispatch(actions.fetchMessageSuccess({ message: data.attributes }));
+      });
 
-  store.dispatch(actions.fetchChannelsSuccess({ channels: gon.channels }));
+      socket.on('newChannel', ({ data }) => {
+        store.dispatch(actions.fetchChannelSuccess({ channel: data.attributes }));
+      });
 
-  store.dispatch(actions.setCurrentChannelId({ currentChannelId: gon.currentChannelId }));
+      socket.on('renameChannel', ({ data }) => {
+        store.dispatch(actions.renameChannelSuccess({ channel: data.attributes }));
+      });
 
-  socket.on('newMessage', ({ data }) => {
-    store.dispatch(actions.fetchMessageSuccess({ message: data.attributes }));
-  });
+      socket.on('removeChannel', ({ data }) => {
+        store.dispatch(
+          actions.removeChannelSuccess({
+            id: data.id,
+            currentChannelId: gon.currentChannelId,
+          }),
+        );
+      });
 
-  socket.on('newChannel', ({ data }) => {
-    store.dispatch(actions.fetchChannelSuccess({ channel: data.attributes }));
-  });
+      if (!getUserName()) {
+        const name = getNewName();
+        setUserName(name);
+      }
 
-  socket.on('renameChannel', ({ data }) => {
-    store.dispatch(actions.renameChannelSuccess({ channel: data.attributes }));
-  });
-
-  socket.on('removeChannel', ({ data }) => {
-    store.dispatch(actions.removeChannelSuccess({ id: data.id }));
-    store.dispatch(actions.setCurrentChannelId({ currentChannelId: gon.currentChannelId }));
-  });
-
-  ReactDOM.render(
-    <Provider store={store}>
-      <Context.Provider value={{ user: getUserName() }}>
-        <App />
-      </Context.Provider>
-    </Provider>,
-    document.querySelector('.container'),
-  );
+      ReactDOM.render(
+        <Provider store={store}>
+          <Context.Provider value={{ user: getUserName() }}>
+            <App />
+          </Context.Provider>
+        </Provider>,
+        document.querySelector('.container'),
+      );
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 };

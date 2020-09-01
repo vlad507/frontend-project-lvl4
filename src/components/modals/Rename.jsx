@@ -12,9 +12,9 @@ const Rename = (props) => {
   const dispatch = useDispatch();
 
   const {
-    channels: { allIds, byId },
+    channels: { channelsList },
   } = useSelector((state) => state);
-  const channelsNames = allIds.map((channelId) => byId[channelId].name);
+  const channelsNames = channelsList.filter((channel) => channel.name);
 
   const channelSchema = yup.object().shape({
     channel: yup.string().trim().required(i18next.t('required')).notOneOf(channelsNames),
