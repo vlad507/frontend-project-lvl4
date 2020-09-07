@@ -1,35 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { selectors } from '../slices';
 
-const mapStateToProps = (state) => {
-  const { messages, channels: { currentChannelId } } = state;
-  const props = {
-    messages,
-    currentChannelId,
-  };
+export default () => {
+  const messages = useSelector(selectors.getMessagesForChannel);
 
-  return props;
-};
-
-class MessageArea extends React.PureComponent {
-  render() {
-    const { messages, currentChannelId } = this.props;
-    const currentChannelMessages = messages
-      .filter((message) => message.channelId === currentChannelId);
-
-    return (
-      <div className="d-flex-column overflow-auto h-75 flex-fill">
-        <div className="col-sm-12">
-          {currentChannelMessages.map(({ userName, message, id }) => (
-            <div key={id} className="d-flex-column flex-wrap">
-              <h6>{userName}</h6>
-              <p className="px-2">{message}</p>
-            </div>
-          ))}
-        </div>
+  return (
+    <div className="d-flex-column overflow-auto h-75 flex-fill">
+      <div className="col-sm-12">
+        {messages.map(({ userName, message, id }) => (
+          <div key={id} className="d-flex-column flex-wrap">
+            <h6>{userName}</h6>
+            <p className="px-2">{message}</p>
+          </div>
+        ))}
       </div>
-    );
-  }
-}
-
-export default connect(mapStateToProps)(MessageArea);
+    </div>
+  );
+};

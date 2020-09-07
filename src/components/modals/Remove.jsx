@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import i18next from 'i18next';
-import { asyncActions, actions } from '../../redux';
+import { asyncActions, actions } from '../../slices';
 
 const Remove = (props) => {
   const { id } = props;

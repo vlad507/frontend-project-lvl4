@@ -1,6 +1,6 @@
-// @ts-check
+/* eslint-disable no-shadow */
 
-import { combineReducers } from 'redux';
+import { combineReducers, createSelector } from '@reduxjs/toolkit';
 
 import channels, {
   actions as channelsActions, removeChannel, renameChannel, addNewChannel,
@@ -13,6 +13,13 @@ export default combineReducers({
   messages,
   modal,
 });
+
+const getMessagesForChannel = createSelector(
+  (state) => state.messages,
+  (state) => state.channels.currentChannelId,
+  (messages, currentChannelId) => messages
+    .filter((m) => m.channelId === currentChannelId),
+);
 
 const asyncActions = {
   removeChannel,
@@ -27,7 +34,13 @@ const actions = {
   ...modalActions,
 };
 
+const selectors = {
+  getMessagesForChannel,
+};
+
+
 export {
   actions,
   asyncActions,
+  selectors,
 };

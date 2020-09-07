@@ -2,7 +2,7 @@ import React from 'react';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import i18next from 'i18next';
-import { actions } from '../redux';
+import { actions } from '../slices';
 
 export default () => {
   const dispatch = useDispatch();

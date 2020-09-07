@@ -15,8 +15,8 @@ import i18next from 'i18next';
 import resources from './locales';
 import Context from './context';
 import App from './components/App';
-import { getUserName, setUserName, getNewName } from './utils';
-import reducer, { actions } from './redux';
+import setNameForNewUser from './utils';
+import reducer, { actions } from './slices';
 
 export default () => {
   i18next
@@ -67,14 +67,11 @@ export default () => {
         );
       });
 
-      if (!getUserName()) {
-        const name = getNewName();
-        setUserName(name);
-      }
+      const name = setNameForNewUser();
 
       ReactDOM.render(
         <Provider store={store}>
-          <Context.Provider value={{ user: getUserName() }}>
+          <Context.Provider value={{ user: name }}>
             <App />
           </Context.Provider>
         </Provider>,

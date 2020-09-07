@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import * as yup from 'yup';
 import i18next from 'i18next';
-import { asyncActions, actions } from '../../redux';
+import { asyncActions, actions } from '../../slices';
 
 const Rename = (props) => {
   const { id, name } = props;

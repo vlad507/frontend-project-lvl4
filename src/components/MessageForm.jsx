@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import i18next from 'i18next';
 import cn from 'classnames';
 
-import { sendMessage } from '../redux/messages';
+import { sendMessage } from '../slices/messages';
 import Context from '../context';
 
 export default () => {
